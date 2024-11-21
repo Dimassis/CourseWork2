@@ -1,13 +1,12 @@
 package sky.pro.CourseWork2.service.impl;
-
 import org.springframework.stereotype.Service;
+import sky.pro.CourseWork2.exception.QuestionIsNotFoundException;
 import sky.pro.CourseWork2.model.Question;
-import sky.pro.CourseWork2.service.JavaQuestionService;
-
+import sky.pro.CourseWork2.service.QuestionService;
 import java.util.*;
 
 @Service
-public class JavaQuestionServiceImpl implements JavaQuestionService {
+public class JavaQuestionServiceImpl implements QuestionService {
     private final Set<Question> questions = new HashSet<>(
             List.of(new Question("What is Java?","A programming language"),
                     new Question("What is JVM?", "Java Virtual Machine"),
@@ -17,28 +16,36 @@ public class JavaQuestionServiceImpl implements JavaQuestionService {
                     new Question("What is IDE?", "Integrated Development Environment"))
     );
 
-
     @Override
     public Collection<Question> getQuestions() {
         return questions;
     }
 
     @Override
-    public Collection<Question> addQuestion(String question, String answer) {
-        questions.add(new Question(question, answer));
-        return questions;
+    public Question addQuestion(Question question) {
+        questions.add(question);
+        return question;
     }
 
     @Override
-    public Collection<Question> removeQuestion(String question) {
-        questions.removeIf(q -> q.getQuestion().equals(question));
-        return questions;
+    public Question addQuestion(String question, String answer) {
+        return addQuestion(new Question(question, answer));
     }
 
     @Override
-    public Optional<Question> findQuestions(String question) {
-        return questions.stream()
-                .filter(q -> q.getQuestion().equals(question))
-                .findFirst();
+    public Question removeQuestion(Question question) throws QuestionIsNotFoundException {
+        if(!questions.contains(question)) {
+            throw new QuestionIsNotFoundException("Question is not found");
+        }
+        questions.remove(question);
+        return question;
+    }
+
+    @Override
+    public Question getRandomQuestions() {
+        Random random = new Random();
+        List<Question> list = new ArrayList<>(questions);
+        int value = random.nextInt(questions.size());
+        return list.get(value);
     }
 }

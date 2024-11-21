@@ -1,15 +1,12 @@
 package sky.pro.CourseWork2.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import sky.pro.CourseWork2.exception.QuestionIsNotFoundException;
+import sky.pro.CourseWork2.exception.WrongAmountQuestionException;
 import sky.pro.CourseWork2.model.Question;
 import sky.pro.CourseWork2.service.impl.JavaQuestionServiceImpl;
 
 import java.util.Collection;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/java")
@@ -25,17 +22,15 @@ public class JavaQuestionController {
         return javaQuestionService.getQuestions();
     }
 
-    @GetMapping("/add")
-    public Collection<Question> addQuestion(@RequestParam String question, @RequestParam String answer) {
+    @PostMapping("/add")
+    public Question addQuestion(@RequestParam String question, @RequestParam String answer) {
         return javaQuestionService.addQuestion(question, answer);
     }
-    @GetMapping("/remove")
-    public Collection<Question> removeQuestion(@RequestParam String question) {
-        return javaQuestionService.removeQuestion(question);
-    }
-    @GetMapping("/find")
-    public Optional<Question> findQuestion(@RequestParam String question) {
-        return javaQuestionService.findQuestions(question);
+
+    @DeleteMapping("/remove")
+    public Question removeQuestion(@RequestParam String question, @RequestParam String answer) {
+        Question newQuestion = new Question(question, answer);
+        return javaQuestionService.removeQuestion(newQuestion);
     }
 }
 

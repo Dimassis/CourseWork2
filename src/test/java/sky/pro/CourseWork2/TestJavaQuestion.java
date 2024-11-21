@@ -1,54 +1,72 @@
 package sky.pro.CourseWork2;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.test.context.SpringBootTest;
+import sky.pro.CourseWork2.exception.QuestionIsNotFoundException;
 import sky.pro.CourseWork2.model.Question;
 import sky.pro.CourseWork2.service.impl.JavaQuestionServiceImpl;
+import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
-@SpringBootTest
-public class TestJavaQuestion {
-    private JavaQuestionServiceImpl javaQuestionService;
-    public static final String WRONG_AMOUNT_QUESTION = "Wrong amount question";
+class JavaQuestionServiceImplTest {
+    private JavaQuestionServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        javaQuestionService = new JavaQuestionServiceImpl();
-        javaQuestionService.getQuestions().clear();
+        service = new JavaQuestionServiceImpl();
     }
 
     @Test
-    public void testShouldAddedQuestion() {
-        Assertions.assertEquals(0, javaQuestionService.getQuestions().size());
-        javaQuestionService.addQuestion("Вопрос 1", "Ответ 1");
-        Assertions.assertEquals(1, javaQuestionService.getQuestions().size());
+    void getQuestions_ShouldReturnAllQuestions() {
+        Collection<Question> questions = service.getQuestions();
+
+        assertEquals(6, questions.size());
+
+        assertThat(questions).extracting(question -> question.getQuestion())
+                .contains("What is Java?", "What is JVM?");
     }
 
     @Test
-    public void testShouldRemoveQuestion() {
-        Assertions.assertEquals(0, javaQuestionService.getQuestions().size());
-        javaQuestionService.addQuestion("Вопрос 1", "Ответ 1");
-        Assertions.assertEquals(1, javaQuestionService.getQuestions().size());
-        javaQuestionService.removeQuestion("Вопрос 1");
-        Assertions.assertEquals(0, javaQuestionService.getQuestions().size());
+    void addQuestion_ShouldAddNewQuestion() {
+        Question newQuestion = new Question("What is API?", "Application Programming Interface");
+
+        service.addQuestion(newQuestion);
+
+        assertThat(service.getQuestions()).contains(newQuestion);
     }
 
     @Test
-    public void testShouldFindQuestions() {
-        Assertions.assertEquals(0, javaQuestionService.getQuestions().size());
-        javaQuestionService.addQuestion("Вопрос 1", "Ответ 1");
-        Assertions.assertEquals(1, javaQuestionService.getQuestions().size());
-        Optional<Question> value = javaQuestionService.findQuestions("Вопрос 1");
-        Optional<Question> value2 = javaQuestionService.findQuestions("Вопрос 2");
-        Assertions.assertTrue(value.isPresent());
-        Assertions.assertFalse(value2.isPresent());
+    void addQuestion_WithStrings_ShouldAddNewQuestion() {
+        String question = "What is Framework?";
+        String answer = "A structure for software development";
+
+        service.addQuestion(question, answer);
+
+        assertThat(service.getQuestions())
+                .anyMatch(q -> q.getQuestion().equals(question) && q.getAnswer().equals(answer));
     }
 
+    @Test
+    void removeQuestion_ShouldRemoveExistingQuestion() throws QuestionIsNotFoundException {
+        Question question = new Question("What is Java?", "A programming language");
+
+        service.removeQuestion(question);
+
+        assertThat(service.getQuestions()).doesNotContain(question);
+    }
+
+    @Test
+    void removeQuestion_WhenQuestionNotExists_ShouldThrowException() {
+        Question testQuestion = new Question("What is API?", "Application Programming Interface");
+
+        assertThrows(QuestionIsNotFoundException.class, () -> service.removeQuestion(testQuestion));
+    }
+
+    @Test
+    void getRandomQuestions_ShouldReturnRandomQuestion() {
+        Question randomQuestion = service.getRandomQuestions();
+
+        assertThat(service.getQuestions()).contains(randomQuestion);
+    }
 }
