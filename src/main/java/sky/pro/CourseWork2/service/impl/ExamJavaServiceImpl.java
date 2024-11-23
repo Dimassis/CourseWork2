@@ -1,12 +1,12 @@
 package sky.pro.CourseWork2.service.impl;
-
 import org.springframework.stereotype.Service;
 import sky.pro.CourseWork2.exception.WrongAmountQuestionException;
 import sky.pro.CourseWork2.model.Question;
 import sky.pro.CourseWork2.service.ExamJavaService;
 import sky.pro.CourseWork2.service.QuestionService;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class ExamJavaServiceImpl implements ExamJavaService {

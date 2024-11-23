@@ -3,7 +3,12 @@ import org.springframework.stereotype.Service;
 import sky.pro.CourseWork2.exception.QuestionIsNotFoundException;
 import sky.pro.CourseWork2.model.Question;
 import sky.pro.CourseWork2.service.QuestionService;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 @Service
 public class JavaQuestionServiceImpl implements QuestionService {

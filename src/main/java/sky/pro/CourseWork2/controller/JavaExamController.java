@@ -1,13 +1,10 @@
 package sky.pro.CourseWork2.controller;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sky.pro.CourseWork2.exception.WrongAmountQuestionException;
 import sky.pro.CourseWork2.model.Question;
 import sky.pro.CourseWork2.service.ExamJavaService;
-
 import java.util.Collection;
 
 @RequestMapping("/java/exam")

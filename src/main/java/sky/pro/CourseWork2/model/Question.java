@@ -2,7 +2,6 @@ package sky.pro.CourseWork2.model;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
-
 import java.util.Objects;
 
 @Component

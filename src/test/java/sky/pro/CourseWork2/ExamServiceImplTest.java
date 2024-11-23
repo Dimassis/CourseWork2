@@ -27,17 +27,18 @@ public class ExamServiceImplTest {
     @InjectMocks
     ExamJavaServiceImpl examJavaService;
 
+    private List<Question> questions;
     @BeforeEach
     public void setUp() {
-    }
-
-    @Test
-    void getRandomQuestions_ShouldReturnCorrectNumberOfQuestions() {
-        List<Question> questions = List.of(
+        questions = List.of(
                 new Question("What is Java?", "A programming language"),
                 new Question("What is JVM?", "Java Virtual Machine"),
                 new Question("What is JRE?", "Java Runtime Environment")
         );
+    }
+
+    @Test
+    void getRandomQuestions_ShouldReturnCorrectNumberOfQuestions() {
 
         when(javaQuestionService.getQuestions()).thenReturn(questions);
         when(javaQuestionService.getRandomQuestions()).thenReturn(questions.get(0), questions.get(1), questions.get(2));
@@ -49,13 +50,8 @@ public class ExamServiceImplTest {
 
     @Test
     void getRandomQuestions_WhenAmountIsZero_ShouldThrowException() {
-        when(javaQuestionService.getQuestions()).thenReturn(List.of(
-                new Question("What is Java?", "A programming language"),
-                new Question("What is JVM?", "Java Virtual Machine"),
-                new Question("What is JRE?", "Java Runtime Environment")
-        ));
+        when(javaQuestionService.getQuestions()).thenReturn(questions);
 
-        // Проверяем, что при запросе 0 вопросов выбрасывается исключение
         assertEquals(javaQuestionService.getQuestions().size(), 3);
 
         assertThrows(WrongAmountQuestionException.class, () -> examJavaService.getRandomQuestions(0));
@@ -63,11 +59,10 @@ public class ExamServiceImplTest {
 
     @Test
     void getRandomQuestions_WhenAmountExceedsTotal_ShouldThrowException() {
-        List<Question> questions = List.of(new Question("What is Java?", "A programming language"));
         when(javaQuestionService.getQuestions())
                 .thenReturn(questions);
 
-        assertEquals(javaQuestionService.getQuestions().size(), 1);
+        assertEquals(javaQuestionService.getQuestions().size(), 3);
 
         assertThrows(WrongAmountQuestionException.class, () -> examJavaService.getRandomQuestions(5));
     }
